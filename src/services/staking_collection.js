@@ -103,6 +103,7 @@ async function processEventBlock(blocks, web3) {
 }
 
 async function processStakingEvent(blocks, web3) {
+    web3.eth.defaultBlock = blockStop;
     const stakingContract = new web3.eth.Contract(abi, process.env.STAKING_CONTRACT_ADDRESS, {
         transactionConfirmationBlocks: 1
     })
@@ -143,30 +144,30 @@ async function queryStakeData(pastEvent, stakingContract) {
         let rewardAmount = new BigNumber(0);
         let balance = new BigNumber(0);
         // cần blockStop để lấy tổng số stake tới thời điểm blockStop
-        let numberOfStake = await stakingContract.methods.numberStakeTime(wallet).call({}, blockStop);
+        let numberOfStake = await stakingContract.methods.numberStakeTime(wallet).call({});
         for (var sid = 0; sid < numberOfStake; sid ++) {
             // dữ liệu tại thời điểm current block/tức là block cuối cùng
-            let stakeData = await stakingContract.methods.stakingData(wallet, sid).call({}, blockStop);
+            let stakeData = await stakingContract.methods.stakingData(wallet, sid).call({});
             
             if(stakeData.status == 0) {
                 let blockEndData = await bscWeb3[0].eth.getBlock(blockStop); 
                 if(stakeData.stakeTo >= blockEndData.timestamp) {
                     stakingAmount = stakingAmount.plus(new BigNumber(stakeData.balance));
                     // reward tại thời điểm current block/tức là block cuối cùng
-                    let reward = await stakingContract.methods.reward(wallet, sid).call({}, blockStop);
+                    let reward = await stakingContract.methods.reward(wallet, sid).call({});
                     rewardAmount = rewardAmount.plus(new BigNumber(reward));
                 }
                 else {
                     balance = balance.plus(new BigNumber(stakeData.balance));
                     // reward tại thời điểm current block/tức là block cuối cùng
-                    let reward = await stakingContract.methods.reward(wallet, sid).call({}, blockStop);
+                    let reward = await stakingContract.methods.reward(wallet, sid).call({});
                     balance = balance.plus(new BigNumber(reward));
                 }
             }
         }
         // Query DFY contract để lấy balance của ví add vào balance
         // balance tính tới thời điểm current block/tức là block cuối cùng
-        let balanceTmp = await tokenContract().methods.balanceOf(wallet).call({}, blockStop);
+        let balanceTmp = await tokenContract().methods.balanceOf(wallet).call({});
         balance = balance.plus(new BigNumber(balanceTmp));
         let stakeSum = stakingAmount.plus(rewardAmount);
         //  stakeSum = stakeSum.multipliedBy(1.5) // nếu muốn nhân 1.5 ở stake_amount
