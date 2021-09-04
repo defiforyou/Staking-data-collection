@@ -95,6 +95,8 @@ function splitToQueue(data) {
         queueData[index] = data.slice(Math.floor(index * avgDataLength), Math.floor((index + 1) * avgDataLength))
     })
 
+    queueData[numberOfQueue - 1][queueData[numberOfQueue - 1].length - 1] = data[data.length - 1];
+
     return queueData
 }
 
@@ -194,7 +196,7 @@ async function scan() {
 
             console.log('Block start: ' + blockStart);
 
-            const blockEnd = Math.min(blockStop, blockStart + 50000);
+            const blockEnd = Math.min(blockStop + 1, blockStart + 50000);
             console.log('Block end: ' + blockEnd);
 
             const queueData = splitToQueue(Array.from({length: blockEnd - blockStart}, (_, index) => index + blockStart));
@@ -206,7 +208,7 @@ async function scan() {
             )
 
             blockStart = blockEnd
-            if (blockStart === blockStop) {
+            if (blockStart === blockStop + 1) {
                 break;
             }
         } catch (e) {
