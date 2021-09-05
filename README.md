@@ -18,8 +18,8 @@ Usage:
 git clone https://github.com/notional-labs/staking-data-collection
 cd staking-data-collection
 npm i
-node src/staking_collection.js
-node src/dfy_collection.js
+node --max-old-space-size=8192 src/dfy_collection.js
+node --max-old-space-size=8192 src/staking_collection.js
 ```
 
 
