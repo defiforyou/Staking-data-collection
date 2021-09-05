@@ -21,6 +21,7 @@ node src/dfy_collection.js
 
 For any given range of block heights, this repository can be used to produce a determistic export of an EVM contract and an associated lock contract.
 
+The final result will be summarized as a single Content ID, MD5 sum, and sha256sum.  
 
-Produces CID:
+
 
