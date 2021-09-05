@@ -14,7 +14,8 @@ Usage:
 git clone https://github.com/notional-labs/staking-data-collection
 cd staking-data-collection
 npm i
-node src/
+node src/staking_collection.js
+node src/dfy_collection.js
 ```
 
 
