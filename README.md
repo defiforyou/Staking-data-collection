@@ -19,5 +19,8 @@ node src/dfy_collection.js
 ```
 
 
+For any given range of block heights, this repository can be used to produce a determistic export of a bsc contract and an associated lock contract.
+
+
 Produces CID:
 
