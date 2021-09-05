@@ -25,6 +25,7 @@ let processingMap = {};
 let errorProcessedMap = [];
 
 const retryOnce = helpers.retry(1);
+const retryThrice = helpers.retry(3);
 
 const csvWriter = createObjectCsvWriter({
     path: pathResult,
@@ -104,7 +105,7 @@ function splitToQueue(data) {
 }
 
 async function processEventBlock(blocks, web3) {
-    await processTransferEvent(blocks, web3);
+    await retryThrice(processTransferEvent, blocks, web3);
 }
 
 async function processTransferEvent(blocks, web3) {
@@ -127,7 +128,7 @@ async function processTransferEvent(blocks, web3) {
         switch (pastEvent['event']) {
             case 'Transfer' :
                 // Added retry in case of network errors.
-                await retryOnce(queryTransferData,pastEvent, tokenContract);
+                await retryThrice(queryTransferData,pastEvent, tokenContract);
                 await waitFor(30);
                 break;
         }

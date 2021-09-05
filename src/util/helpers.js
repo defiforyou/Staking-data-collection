@@ -1,16 +1,19 @@
-function retryFunction(numretries) {
-    const retries = numretries || 1;
-    let retry = 0;
+module.exports.retry = (numretries) => {
     return async function(fn, ...args) {
-        while(retry<retries) {
+        let retry = 0;
+        while(retry < numretries) {
             try {
-                return fn.apply(fn, args)
+                const result = await fn.apply(fn, args)
+                return result;
             } catch (e) {
-                console.log('Retrying function');
+                console.log(retry+1 +':: Retrying function::' +e.message) ;
                 retry = retry +1;
+                if(retry >= numretries) {
+                    console.log("OUT OF RETRIES for: " + fn.name)
+                    return;
+                }
             }
         }
+
     }
 }
-
-module.exports.retry = retryFunction;
