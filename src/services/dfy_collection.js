@@ -13,6 +13,9 @@ const errorData = 'errorCollectDFYWallet.csv';
 const pathResult = `./${resultData}`;
 const pathErr = `./${errorData}`;
 
+let util = require('util');
+const waitFor = util.promisify(setTimeout);
+
 let blockStart = parseInt(process.env.BLOCK_START_DFY);
 let blockStop = parseInt(process.env.BLOCK_END);
 
@@ -123,6 +126,7 @@ async function processTransferEvent(blocks, web3) {
         switch (pastEvent['event']) {
             case 'Transfer' :
                 await queryTransferData(pastEvent, tokenContract);
+                await waitFor(30);
                 break;
         }
     }
@@ -180,6 +184,7 @@ async function scan() {
             if (blockStart === blockStop + 1) {
                 break;
             }
+            await waitFor(1000);
         } catch (e) {
             console.error(e.message)
         }
