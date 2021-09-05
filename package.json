@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/services/bsc_scan.js",
     "scan": "node src/services/staking_collection.js",
-    "scanerr": "node src/services/staking_collection_err.js"
+    "scanerr": "node src/services/staking_collection_err.js",
+    "dfy": "node src/services/dfy_collection.js"
   },
   "repository": {
     "type": "git",

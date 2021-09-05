@@ -12,7 +12,7 @@ const resultData = 'collected_dfy_data.csv';
 const errorData = 'errorCollectDFYWallet.csv';
 const pathResult = `./${resultData}`;
 const pathErr = `./${errorData}`;
-
+const helpers = require('../util/helpers');
 let util = require('util');
 const waitFor = util.promisify(setTimeout);
 
@@ -24,6 +24,7 @@ let processingMap = {};
 
 let errorProcessedMap = [];
 
+const retryOnce = helpers.retry(1);
 
 const csvWriter = createObjectCsvWriter({
     path: pathResult,
@@ -125,7 +126,8 @@ async function processTransferEvent(blocks, web3) {
     for (const pastEvent of pastEvents) {
         switch (pastEvent['event']) {
             case 'Transfer' :
-                await queryTransferData(pastEvent, tokenContract);
+                // Added retry in case of network errors.
+                await retryOnce(queryTransferData,pastEvent, tokenContract);
                 await waitFor(30);
                 break;
         }
@@ -155,7 +157,7 @@ async function queryTransferData(pastEvent, tokenContract) {
             errorProcessedMap.push(wallet);
             await writeToErrorCSV(wallet);
         }
-        
+
     }
 }
 
