@@ -1,4 +1,4 @@
-# Staking-data-collection
+# Staking Data Collection
 
 
 This is a data collection tool for contracts on BSC.  
