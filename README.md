@@ -6,7 +6,11 @@ This is a data collection tool for contracts on BSC.
 Expected Environment:
 * Node.js 16
 * Datacenter class server with fast and reliable internet
+* Python 3
 * Linux operating system
+* md5sum
+* sha256sum
+* go-ipfs
 
 Usage:
 
