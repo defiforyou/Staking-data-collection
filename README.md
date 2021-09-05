@@ -18,14 +18,15 @@ Usage:
 git clone https://github.com/notional-labs/staking-data-collection
 cd staking-data-collection
 npm i
-node src/staking_collection.js
-node src/dfy_collection.js
+node --max-old-space-size=8192 src/dfy_collection.js
+node --max-old-space-size=8192 src/staking_collection.js
 ```
 
 
-For any given range of block heights, this repository can be used to produce a determistic export of an EVM contract and an associated lock contract.
+For any given range of block heights, this repository can be used to produce an export of an EVM contract and an associated lock contract.
 
-The final result will be summarized as a single Content ID, MD5 sum, and sha256sum.  
+We export with the javascript code, sort with the Python code, and verify correctness using md5sum, sha256sum and an IPFS CID.
+
 
 
 
