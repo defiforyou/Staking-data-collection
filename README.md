@@ -18,8 +18,16 @@ Usage:
 git clone https://github.com/notional-labs/staking-data-collection
 cd staking-data-collection
 npm i
-node --max-old-space-size=8192 src/dfy_collection.js
 node --max-old-space-size=8192 src/staking_collection.js
+python sort.py collected_data.csv
+sha256sum sorted_collected_data.csv
+md5sum sorted_collected_data.csv
+rm collected_data.csv
+node --max-old-space-size=8192 src/dfy_collection.js
+python sort.py collected_data.csv
+sha256sum sorted_collected_data.csv
+md5sum sorted_collected_data.csv
+ipfs add sorted_collected_data.csv
 ```
 
 
