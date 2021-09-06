@@ -14,6 +14,5 @@ module.exports.retry = (numretries) => {
                 }
             }
         }
-
     }
 }
