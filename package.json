@@ -9,7 +9,7 @@
     "scan": "node src/services/staking_collection.js",
     "scanerr": "node src/services/staking_collection_err.js",
     "clean": "rm *.csv",
-    "dfy": "clean && node src/services/dfy_collection.js"
+    "dfy": "node src/services/dfy_collection.js"
   },
   "repository": {
     "type": "git",
