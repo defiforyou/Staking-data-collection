@@ -1,25 +1,39 @@
 # Staking Data Collection
+This is a data collection tool for contracts on EVM blockchains.
 
 
-This is a data collection tool for contracts on BSC.  
-
-Expected Environment:
+### Operational Requirements
 * Node.js 16
-* Datacenter class server with fast and reliable internet
+* Datacenter class server
+* RPC access to one or more archive nodes
 * Python 3
 * Linux operating system
 * md5sum
 * sha256sum
 * go-ipfs
 
-Usage:
+### Usage
 
 ```bash
+# DOWNLOAD THE REPOSITORY
 git clone https://github.com/notional-labs/staking-data-collection
+# INSTALL NODE MODULES
 cd staking-data-collection
 npm i
-node --max-old-space-size=8192 src/dfy_collection.js
-node --max-old-space-size=8192 src/staking_collection.js
+# GATHER STAKING DATA
+node --max-old-space-size=8192 src/services/staking_collection.js
+wc -l collected_data.csv
+python sort.py collected_data.csv
+sha256sum sorted_collected_data.csv
+md5sum sorted_collected_data.csv
+rm collected_data.csv
+# GATHER BALANCES
+node --max-old-space-size=8192 src/services/dfy_collection.js
+wc -l collected_data.csv
+python sort.py collected_data.csv
+sha256sum sorted_collected_data.csv
+md5sum sorted_collected_data.csv
+ipfs add sorted_collected_data.csv
 ```
 
 
