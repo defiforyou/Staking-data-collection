@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 require('dotenv').config()
-
+const 
 const binanceProvider={
     MAINNET:[
         new Web3(process.env.WEB3),
@@ -9,11 +9,11 @@ const binanceProvider={
         new Web3(process.env.WEB3),
         new Web3(process.env.WEB3),
         new Web3(process.env.WEB3),
-        new Web3(process.env.WEB3),
-        new Web3(process.env.WEB3),
-        new Web3(process.env.WEB3),
-        new Web3(process.env.WEB3),
-        new Web3(process.env.WEB3),
+        // new Web3(process.env.WEB3),
+        // new Web3(process.env.WEB3),
+        // new Web3(process.env.WEB3),
+        // new Web3(process.env.WEB3),
+        // new Web3(process.env.WEB3),
     ],
     TESTNET:[
 	    new Web3('https://data-seed-prebsc-2-s3.binance.org:8545/'),
