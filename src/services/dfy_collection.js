@@ -129,7 +129,7 @@ async function processTransferEvent(blocks, web3) {
             case 'Transfer' :
                 // Added retry in case of network errors.
                 await retryThrice(queryTransferData,pastEvent, tokenContract);
-                await waitFor(30);
+                await waitFor(150);
                 break;
         }
     }
