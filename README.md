@@ -1,7 +1,6 @@
 # Staking Data Collection
+This is a data collection tool for contracts on EVM blockchains.
 
-
-This is a data collection tool for contracts on BSC.  
 
 ### Operational Requirements
 * Node.js 16
