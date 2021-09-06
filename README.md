@@ -3,7 +3,7 @@
 
 This is a data collection tool for contracts on BSC.  
 
-Expected Environment:
+### Operational Requirements
 * Node.js 16
 * Datacenter class server with fast and reliable internet
 * Python 3
@@ -12,7 +12,7 @@ Expected Environment:
 * sha256sum
 * go-ipfs
 
-Usage:
+### Usage
 
 ```bash
 # DOWNLOAD THE REPOSITORY
