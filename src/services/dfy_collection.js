@@ -8,28 +8,31 @@ const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{
 const bscWeb3 = require("../configs/blockchain/web3");
 const numberOfQueue = bscWeb3.length
 
-const resultData = 'collected_dfy_data.csv';
+const resultData = 'dfy_holders_list2.csv';
 const errorData = 'errorCollectDFYWallet.csv';
 const pathResult = `./${resultData}`;
 const pathErr = `./${errorData}`;
 const helpers = require('../util/helpers');
 let util = require('util');
+const { SSL_OP_EPHEMERAL_RSA } = require('constants');
+const { rejects } = require('assert');
 const waitFor = util.promisify(setTimeout);
 
 let blockStart = parseInt(process.env.BLOCK_START_DFY);
 let blockStop = parseInt(process.env.BLOCK_END);
 
+let accountSet = new Set();
+
 let processedMap = {};
 let processingMap = {};
 
-let errorProcessedMap = [];
+let errorProcessedMap = new Set();
 
-const retryOnce = helpers.retry(1);
 const retryThrice = helpers.retry(3);
 
 const csvWriter = createObjectCsvWriter({
     path: pathResult,
-    header: [{id: 'wallet', title: 'wallet'}, {id: 'stake', title: 'stake'}, {id: 'balance', title: 'balance'}],
+    header: [{id: 'wallet', title: 'wallet'}, {id: 'balance', title: 'balance'}],
     alwaysQuote: false,
     append: true
 })
@@ -41,27 +44,27 @@ const csvWriterErr = createObjectCsvWriter({
     append: true
 })
 
-async function writeToResultCSV(wallet_address, staking_amount, balance_amount) {
+async function writeToResultCSV(wallet_address, balance_amount) {
     if(wallet_address in processedMap) {
         return;
     } else {
-        processedMap[wallet_address] = {balance: balance_amount, stake: staking_amount};
-        let row = [{wallet: wallet_address, stake: staking_amount, balance: balance_amount}]
+        processedMap[wallet_address] = {balance: balance_amount};
+        let row = [{wallet: wallet_address, balance: balance_amount}]
         await csvWriter.writeRecords(row)
     }
 }
 
 async function writeToErrorCSV(wallet_address) {
-    if(!errorProcessedMap.includes(wallet_address)) {
-        return;
-    } else {
-        await csvWriterErr.writeRecords([{wallet: wallet_address}])
-    }
+
+    await csvWriterErr.writeRecords([{wallet: wallet_address}])
+
 }
 
 async function readCollectedData(path) {
+
     const readline = require("readline");
     if(fs.existsSync(path)) {
+
         const filestream = fs.createReadStream(path);
         const rl = readline.createInterface({
             input: filestream,
@@ -70,25 +73,11 @@ async function readCollectedData(path) {
 
         for await (const line of rl) {
             const data = line.split(",")
-            processedMap[data[0]] = {balance: data[2], stake: data[1]}
+
+            accountSet.add(data[0])
         }
-
         filestream.destroy();
-
         console.log('processedMap successfully');
-    }
-}
-
-function readErrorData(pathErr) {
-    if(fs.existsSync(pathErr)) {
-        fs.createReadStream(pathErr)
-            .pipe(csvParser())
-            .on('data', (data) => {
-                errorProcessedMap.push(data.wallet);
-            })
-            .on('end', () => {
-                console.log(errorProcessedMap);
-            });
     }
 }
 
@@ -109,7 +98,7 @@ async function processEventBlock(blocks, web3) {
 }
 
 async function processTransferEvent(blocks, web3) {
-    web3.eth.defaultBlock = blockStop;
+    web3.eth.defaultBlock = blockStart;
     const tokenContract = new web3.eth.Contract(abi, process.env.DFY_CONTRACT_ADDRESS, {
         transactionConfirmationBlocks: 1
     })
@@ -125,45 +114,52 @@ async function processTransferEvent(blocks, web3) {
     }
 
     for (const pastEvent of pastEvents) {
-        switch (pastEvent['event']) {
-            case 'Transfer' :
+        // switch (pastEvent['event']) {
+        //     case 'Transfer' :
                 // Added retry in case of network errors.
-                await retryThrice(queryTransferData,pastEvent, tokenContract);
-                await waitFor(150);
-                break;
-        }
+        let account = pastEvent.returnValues.from;
+
+        accountSet.add(account);
+        break;
+        // }
     }
 }
 
-async function queryTransferData(pastEvent, tokenContract) {
-    let wallet = pastEvent.returnValues.to;
-    if (wallet in processedMap || wallet in processingMap) {
-        return;
-    }
+function writeToResult(){
+    var fs = require('fs');
+    var file = fs.createWriteStream('accounts3.txt');
+    accountSet.forEach(value => file.write(`${value}\n`));
+    file.end();
+}
 
-    console.log('handle wallet: ', wallet);
-    processingMap[wallet] = 1;
-    try {
-        if (wallet in processedMap || errorProcessedMap.includes(wallet)) {
-            return;
-        }
+async function getBalancesOfAccountSet() {
+    web3 = bscWeb3[0];
+    web3.eth.defaultBlock = blockStart;
+    const tokenContract = new web3.eth.Contract(abi, process.env.DFY_CONTRACT_ADDRESS, {
+        transactionConfirmationBlocks: 1
+    })
 
-        let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
-        console.log("result: " + wallet + " - " + balance.toFixed());
-        await writeToResultCSV(wallet, balance.toFixed(), balance.toFixed());
-    } catch (error) {
-        console.log(`error ${wallet}\n`);
-        console.log(error);
-        if(!errorProcessedMap.includes(wallet)) {
-            errorProcessedMap.push(wallet);
-            await writeToErrorCSV(wallet);
-        }
-
+    for (const wallet of accountSet) {
+        console.log('handle wallet: ', wallet);
+        await new Promise(r => setTimeout(r, 10));
+        var promise = new Promise(async function() {
+            try {
+                let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
+                console.log("result: " + wallet + " - " + balance.toFixed());
+                await writeToResultCSV(wallet, balance.toFixed());
+            } 
+            catch (error) {
+                console.log(`error ${wallet}\n`);
+                console.log(error);
+                await writeToErrorCSV(wallet);
+            }
+        }); 
+        promise.then();
     }
 }
 
 async function scan() {
-    await readCollectedData(pathResult);
+    await readCollectedData('./export-tokenholders-for-contract-0xd98560689c6e748dc37bc410b4d3096b1aa3d8c2.csv');
 
     while (true) {
         try {
@@ -176,13 +172,12 @@ async function scan() {
             console.log('Block end: ' + blockEnd);
 
             const queueData = splitToQueue(Array.from({length: blockEnd - blockStart}, (_, index) => index + blockStart));
-
+            // console.log(index, "index")
             await Promise.all(
                 bscWeb3.map((web3, index) => {
                     return processEventBlock(queueData[index], web3)
                 })
             )
-
             blockStart = blockEnd
             if (blockStart === blockStop + 1) {
                 break;
@@ -192,7 +187,13 @@ async function scan() {
             console.error(e.message)
         }
     };
+    
 
+    writeToResult();
+    getBalancesOfAccountSet();
 }
 
 scan();
+
+
+// getBalancesOfAccountSet();
