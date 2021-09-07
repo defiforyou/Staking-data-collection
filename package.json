@@ -20,9 +20,6 @@
   "bugs": {
     "url": "https://gitlab.com/edsolabs/edsolabs-defi/bc-service/issues"
   },
-  "engines": {
-    "node": "16.8.0"
-  },
   "engineStrict": true,
   "homepage": "https://gitlab.com/edsolabs/edsolabs-defi/bc-service#readme",
   "dependencies": {
