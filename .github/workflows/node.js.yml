@@ -1,0 +1,24 @@
+name: run
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.9.0
+        
+    - run: npm i -g yarn
+    
+    - run: yarn install
+    
+    - run: bash run.bash
+    
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.0.10
