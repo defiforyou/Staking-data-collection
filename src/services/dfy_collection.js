@@ -132,7 +132,6 @@ function writeToResult(){
     file.end();
 }
 
-
 async function getBalancesOfAccountSet() {
     web3 = bscWeb3[0];
     web3.eth.defaultBlock = blockStart;
@@ -144,19 +143,17 @@ async function getBalancesOfAccountSet() {
         console.log('handle wallet: ', wallet);
         await new Promise(r => setTimeout(r, 10));
         var promise = new Promise(async function() {
-        let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
-        console.log("result: " + wallet + " - " + balance.toFixed());
-        await writeToResultCSV(wallet, balance.toFixed(), balance.toFixed());
-    } catch (error) {
-        console.log(`error ${wallet}\n`);
-        console.log(error);
-        if(!errorProcessedMap.includes(wallet)) {
-            errorProcessedMap.push(wallet);
-            await writeToErrorCSV(wallet);
-        }
-        throw error;
+            try {
+                let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
+                console.log("result: " + wallet + " - " + balance.toFixed());
+                await writeToResultCSV(wallet, balance.toFixed());
+            } 
+            catch (error) {
+                console.log(`error ${wallet}\n`);
+                console.log(error);
+                await writeToErrorCSV(wallet);
+            }
         }); 
-      
         promise.then();
     }
 }
@@ -188,7 +185,6 @@ async function scan() {
             await waitFor(1000);
         } catch (e) {
             console.error(e.message)
-            process.exit(1);
         }
     };
     
