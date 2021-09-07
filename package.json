@@ -20,12 +20,16 @@
   "bugs": {
     "url": "https://gitlab.com/edsolabs/edsolabs-defi/bc-service/issues"
   },
+  "engines": {
+    "node": "16.8.0"
+  },
+  "engineStrict": true,
   "homepage": "https://gitlab.com/edsolabs/edsolabs-defi/bc-service#readme",
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "csv-parser": "^3.0.0",
-    "csv-writer": "^1.6.0",
-    "web3": "^1.3.4"
+    "dotenv": "8.2.0",
+    "csv-parser": "3.0.0",
+    "csv-writer": "1.6.0",
+    "web3": "1.3.4"
   },
   "engines": {
     "node": "16.9.0",
