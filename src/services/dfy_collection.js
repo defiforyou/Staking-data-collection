@@ -190,6 +190,7 @@ async function scan() {
             await waitFor(1000);
         } catch (e) {
             console.error(e.message)
+            process.exit(1);
         }
     };
 
