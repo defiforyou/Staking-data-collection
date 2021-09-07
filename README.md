@@ -4,8 +4,11 @@ This is a data collection tool for contracts on EVM blockchains.
 
 ### Operational Requirements
 * Node.js 16
-* Datacenter class server
-* RPC access to one or more archive nodes
+* RPC access to one or more archive nodes for
+  * BSC
+  * Ethereum
+  * Ethereum Classic
+  * Tron
 * Python 3
 * Linux operating system
 * md5sum
