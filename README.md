@@ -17,23 +17,8 @@ This is a data collection tool for contracts on EVM blockchains.
 ```bash
 # DOWNLOAD THE REPOSITORY
 git clone https://github.com/notional-labs/staking-data-collection
-# INSTALL NODE MODULES
-cd staking-data-collection
-npm i
-# GATHER STAKING DATA
-node --max-old-space-size=8192 src/services/staking_collection.js
-wc -l collected_data.csv
-python sort.py collected_data.csv
-sha256sum sorted_collected_data.csv
-md5sum sorted_collected_data.csv
-rm collected_data.csv
-# GATHER BALANCES
-node --max-old-space-size=8192 src/services/dfy_collection.js
-wc -l collected_data.csv
-python sort.py collected_data.csv
-sha256sum sorted_collected_data.csv
-md5sum sorted_collected_data.csv
-ipfs add sorted_collected_data.csv
+# RUN
+bash run.bash
 ```
 
 
