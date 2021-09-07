@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 require('dotenv').config()
-require('./node');
+
 const binanceProvider={
     MAINNET:[
         new Web3(process.env.WEB3),

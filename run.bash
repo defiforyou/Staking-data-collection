@@ -1,5 +1,6 @@
 yarn install
 yarn run scan
+yarn run scanerr
 ipfs add collected_data.csv
 python sort.py collected_data.csv
 ipfs add collected_data.csv
