@@ -158,7 +158,7 @@ async function queryTransferData(pastEvent, tokenContract) {
             errorProcessedMap.push(wallet);
             await writeToErrorCSV(wallet);
         }
-
+        throw error;
     }
 }
 
