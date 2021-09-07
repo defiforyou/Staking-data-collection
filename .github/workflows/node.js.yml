@@ -14,9 +14,9 @@ jobs:
       with:
         node-version: 16.9.0
         
-    - run: npm i -g yarn
+    - run: npm i -g yarn@v1.22.11
     
-    - run: yarn install
+    - run: yarn install    
     
     - run: bash run.bash
     
