@@ -7,7 +7,7 @@ const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{
 const bscWeb3 = require("../configs/blockchain/web3");
 const numberOfQueue = bscWeb3.length
 
-const resultData = 'dfy_holders_list5.csv';
+const resultData = 'dfy_holders_list.csv';
 const pathResult = `./${resultData}`;
 const helpers = require('../util/helpers');
 let util = require('util');
@@ -18,7 +18,7 @@ const waitFor = util.promisify(setTimeout);
 let blockStart = parseInt(process.env.BLOCK_START_DFY);
 let blockStop = parseInt(process.env.BLOCK_END);
 
-// Set of account of
+// Set of account of 
 let accountSet = new Set();
 
 let accountToBalanceMap = new Map();
@@ -37,7 +37,7 @@ async function writeToResultCSV(wallet_address, balance_amount) {
     await csvWriter.writeRecords(row);
 }
 
-// this func is for dumping the
+// this func is for dumping the 
 async function readCollectedData(path) {
 
     const readline = require("readline");
@@ -97,39 +97,41 @@ async function processTransferEvent(blocks, web3) {
     }
 }
 
-// async function getBalancesOfAccountSet() {
-//     web3 = bscWeb3[0];
-//     web3.eth.defaultBlock = blockStart;
-//     const tokenContract = new web3.eth.Contract(abi, process.env.DFY_CONTRACT_ADDRESS, {
-//         transactionConfirmationBlocks: 1
-//     })
-//     for (const wallet of accountSet) {
-//         console.log('handle wallet: ', wallet);
-//         await new Promise(r => setTimeout(r, 10));
-//         let trial = 0;
-//         let promise = new Promise(async function() {
-//             while(true) {
-//                 try {
-//                     trial ++;
-//                     let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
-//                     console.log("result: " + wallet + " - " + balance.toFixed());
-//                     accountToBalanceMap.set(wallet, balance);
-//                     break;
-//                 }
-//                 catch (error) {
-//                     if (trial == 5) {
-//                         break;
-//                     }
-//                 }
-//             }
-//         });
-//         promise.then();
-//     }
-//     const sortedAccountToBalanceMap = new Map([...accountToBalanceMap.entries()].sort());
-//     for (const [wallet, balance] of sortedAccountToBalanceMap.entries()) {
-//         await writeToResultCSV(wallet, balance.toFixed());
-//     }
-// }
+async function getBalancesOfAccountSet() {
+    web3 = bscWeb3[0];
+    web3.eth.defaultBlock = blockStart;
+    const tokenContract = new web3.eth.Contract(abi, process.env.DFY_CONTRACT_ADDRESS, {
+        transactionConfirmationBlocks: 1
+    })
+    for (const wallet of accountSet) {
+        console.log('handle wallet: ', wallet);
+        await new Promise(r => setTimeout(r, 10));
+        let trail = 0;
+        let promise = new Promise(async function() {
+            while(true) {
+                try {
+                    trail ++;
+                    let balance = new BigNumber(await tokenContract.methods.balanceOf(wallet).call({}));
+                    console.log("result: " + wallet + " - " + balance.toFixed());
+                    accountToBalanceMap.set(wallet, balance);
+                    break;
+                } 
+                catch (error) {
+                    console.log("error---------------------------------------------------" + trail)
+                    if (trail == 5) {
+                        break;
+                    }
+                } 
+            }
+        }); 
+        promise.then();
+    }
+    console.log("sdafasdfsdffsd")
+    const sortedAccountToBalanceMap = new Map([...accountToBalanceMap.entries()].sort());
+    for (const [wallet, balance] of sortedAccountToBalanceMap.entries()) {
+        await writeToResultCSV(wallet, balance.toFixed());
+    }
+}
 
 async function scan() {
     await readCollectedData('./dfy_account_holders_asof_block-10714832.csv');
@@ -161,8 +163,7 @@ async function scan() {
             console.error(e.message)
         }
     };
-    console.log(accountSet.size)
-    // await getBalancesOfAccountSet();
+    getBalancesOfAccountSet();
 }
 
 scan();
