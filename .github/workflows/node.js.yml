@@ -1,0 +1,30 @@
+name: run
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.9.0
+        
+    - run: npm i -g yarn@v1.22.11
+    
+    - name: ipfs
+      run: |
+          wget https://dist.ipfs.io/go-ipfs/v0.9.1/go-ipfs_v0.9.1_linux-amd64.tar.gz
+          tar -xvzf go-ipfs_v0.9.1_linux-amd64.tar.gz
+          cd go-ipfs
+          sudo bash install.sh
+          ipfs init
+    
+    - run: yarn install    
+        
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.0.10

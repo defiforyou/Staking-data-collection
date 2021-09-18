@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/services/bsc_scan.js",
     "scan": "node src/services/staking_collection.js",
-    "scanerr": "node src/services/staking_collection_err.js"
+    "scanerr": "node src/services/staking_collection_err.js",
+    "clean": "rm *.csv",
+    "dfy": "node src/services/dfy_collection.js"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,14 @@
   },
   "homepage": "https://gitlab.com/edsolabs/edsolabs-defi/bc-service#readme",
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "bignumber": "^1.1.0",
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
+    "dotenv": "^8.2.0",
     "web3": "^1.3.4"
+  },
+  "engines": {
+    "node": "16.9.0",
+    "yarn": "1.22.11"
   }
 }
